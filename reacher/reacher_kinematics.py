@@ -1,4 +1,5 @@
 import math
+from math import cos, sin
 import numpy as np
 import copy
 
@@ -20,7 +21,20 @@ def calculate_forward_kinematics_robot(joint_angles):
       xyz coordinates of the end-effector in the arm frame. Numpy array of 3 elements.
     """
     # TODO for students: Implement this function. ~25-35 lines of code.
+    R_NA = np.array([[cos(joint_angles[0]), sin(joint_angles[0]), 0],
+                    [-sin(joint_angles[0]), cos(joint_angles[0]), 0],
+                    [0, 0, 1]])
+    R_AB = np.array([[cos(joint_angles[1]), 0, -sin(joint_angles[1])],
+                     [0, 1, 0],
+                     [sin(joint_angles[1]), 0, cos(joint_angles[1])]])
+    R_BC = np.array([[cos(joint_angles[2]), 0, -sin(joint_angles[2])],
+                      [0, 1, 0],
+                      [sin(joint_angles[2]), 0, cos(joint_angles[2])]])
+    r_ce = np.array([0.0, 0.0, 0.11])
+    r_bc = np.array([0.0, 0.0, 0.08])
+    r_ab = np.array([0.0, -0.03, 0.0])
     end_effector_xyz = np.array([0.0, 0.0, 0.0])
+    end_effector_xyz = (R_NA @ (R_AB @ (R_BC @ r_ce + r_bc) + r_ab))
     return end_effector_xyz
 
 def ik_cost(end_effector_pos, guess):

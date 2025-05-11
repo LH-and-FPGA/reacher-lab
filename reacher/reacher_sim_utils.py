@@ -13,6 +13,7 @@ def create_debug_sphere():
 
 def load_reacher():
   p.connect(p.GUI)
+  # p.connect(p.GUI, options="--width=1920 --height=1080")
   p.configureDebugVisualizer(p.COV_ENABLE_RGB_BUFFER_PREVIEW, 0)
   p.configureDebugVisualizer(p.COV_ENABLE_DEPTH_BUFFER_PREVIEW, 0)
   p.configureDebugVisualizer(p.COV_ENABLE_SEGMENTATION_MARK_PREVIEW, 0)

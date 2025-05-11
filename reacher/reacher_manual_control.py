@@ -14,8 +14,8 @@ flags.DEFINE_bool("run_on_robot", False,
 flags.DEFINE_bool("ik", False, "Whether to control arms through cartesian coordinates(IK) or joint angles")
 FLAGS = flags.FLAGS
 
-KP = 5.0  # Amps/rad
-KD = 2.0  # Amps/(rad/s)
+KP = 20.0  # Amps/rad
+KD = 1.50  # Amps/(rad/s)
 MAX_CURRENT = 3.0  # Amps
 
 UPDATE_DT = 0.01  # seconds
@@ -37,7 +37,8 @@ def main(argv):
   p.setPhysicsEngineParameter(numSolverIterations=10)
 
   if run_on_robot:
-    serial_port = reacher_robot_utils.get_serial_port()
+    # serial_port = reacher_robot_utils.get_serial_port()
+    serial_port = 'COM3'
     hardware_interface = interface.Interface(serial_port)
     time.sleep(0.25)
     hardware_interface.set_joint_space_parameters(kp=KP,
@@ -101,9 +102,14 @@ def main(argv):
         # left_angles = [-joint_angles[1], -joint_angles[0], joint_angles[2]]
         # right_angles = [-joint_angles[5], joint_angles[4], -joint_angles[3]]
         left_angles = joint_angles[:3]
+        left_angles[2] = -left_angles[2]
         right_angles = joint_angles[3:]
-        full_actions[:, 3] = left_angles
-        full_actions[:, 2] = right_angles
+        # full_actions[:, 3] = left_angles
+        full_actions[:, 0] = left_angles
+        # full_actions[:, 2] = right_angles
+        full_actions[:, 1] = right_angles
+        # 对于joint angles, 0是底下的，1是中间的，2是上面的
+        # 对于full actions来说第0列是left_leg的，第一行是底下的，第二行是中间的，第三行是上面的
 
         hardware_interface.set_actuator_postions(full_actions)
         # Actuator positions are stored in array: hardware_interface.robot_state.position,
